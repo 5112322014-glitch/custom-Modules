@@ -42,6 +42,9 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,issued,rejected"/>
                     </header>
                     <sheet>
+                    <div class="alert alert-info text-center" role="alert" style="margin-bottom: 10px;">
+                        <strong>Document Request Management:</strong> Submit and track your official document requests here.
+                    </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
