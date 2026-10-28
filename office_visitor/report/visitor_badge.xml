@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_visitor_badge" model="ir.actions.report">
+        <field name="name">Visitor Badge</field>
+        <field name="model">office.visitor</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">office_visitor.report_visitor_badge_document</field>
+        <field name="report_file">office_visitor.report_visitor_badge_document</field>
+        <field name="print_report_name">'Badge - %s' % (object.badge_number or '').replace('/', '-')</field>
+        <field name="binding_model_id" ref="model_office_visitor"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_visitor_badge_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="page">
+                        <div style="border: 3px solid #333; padding: 20px; width: 380px; margin: auto; text-align: center;">
+                            <h2>VISITOR</h2>
+                            <h3><span t-field="o.name"/></h3>
+                            <p>Visiting: <b><span t-field="o.host_employee_id"/></b></p>
+                            <p>From: <span t-field="o.place"/></p>
+                            <p>Purpose: <span t-field="o.reason"/></p>
+                            <p>Date: <span t-field="o.visit_date"/></p>
+                            <p t-if="o.check_in_time">Check-in: <span t-field="o.check_in_time"/></p>
+                            <img t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.badge_number, 300, 60)"
+                                 style="width: 300px; height: 60px;"/>
+                            <p><b><span t-field="o.badge_number"/></b></p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

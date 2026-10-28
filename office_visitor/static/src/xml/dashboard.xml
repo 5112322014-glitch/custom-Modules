@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="office_visitor.Dashboard">
+        <div class="o_visitor_dashboard">
+            <div class="o_vd_header">
+                <h2>Visitor Dashboard</h2>
+                <button class="btn btn-secondary" t-on-click="load">Refresh</button>
+            </div>
+
+            <t t-if="state.loading">
+                <p class="o_vd_loading">Loading...</p>
+            </t>
+
+            <t t-else="">
+                <div class="o_vd_cards">
+                    <div class="o_vd_card o_vd_blue" t-on-click="openToday">
+                        <div class="o_vd_number" t-esc="state.data.today_count"/>
+                        <div class="o_vd_label">Today's Visitors</div>
+                    </div>
+                    <div class="o_vd_card o_vd_green" t-on-click="openInside">
+                        <div class="o_vd_number" t-esc="state.data.inside_count"/>
+                        <div class="o_vd_label">Inside Now</div>
+                    </div>
+                    <div class="o_vd_card o_vd_orange" t-on-click="openCheckedOut">
+                        <div class="o_vd_number" t-esc="state.data.checked_out_today"/>
+                        <div class="o_vd_label">Checked Out Today</div>
+                    </div>
+                    <div class="o_vd_card o_vd_purple" t-on-click="openLast10">
+                        <div class="o_vd_number" t-esc="state.data.last_10_days"/>
+                        <div class="o_vd_label">Last 10 Days</div>
+                    </div>
+                </div>
+
+                <div class="o_vd_panels">
+                    <div class="o_vd_panel">
+                        <h4>Last 7 Days</h4>
+                        <div class="o_vd_chart">
+                            <t t-foreach="state.data.daily" t-as="day" t-key="day.date">
+                                <div class="o_vd_bar_wrap" t-on-click="() => this.openDay(day.date)">
+                                    <div class="o_vd_bar_count" t-esc="day.count"/>
+                                    <div class="o_vd_bar" t-att-style="'height:' + day.percent + '%'"/>
+                                    <div class="o_vd_bar_label" t-esc="day.label"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="o_vd_panel">
+                        <h4>Inside Now</h4>
+                        <t t-if="state.data.inside_list.length === 0">
+                            <p class="o_vd_empty">No visitors inside right now.</p>
+                        </t>
+                        <t t-else="">
+                            <table class="table table-sm o_vd_table">
+                                <thead>
+                                    <tr>
+                                        <th>Visitor</th>
+                                        <th>Meeting</th>
+                                        <th>From</th>
+                                        <th>Since</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="state.data.inside_list" t-as="v" t-key="v.id">
+                                        <tr class="o_vd_row" t-on-click="() => this.openVisitor(v.id)">
+                                            <td t-esc="v.name"/>
+                                            <td t-esc="v.host"/>
+                                            <td t-esc="v.place"/>
+                                            <td t-esc="v.check_in"/>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

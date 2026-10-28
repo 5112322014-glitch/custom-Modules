@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="helpdesk_basic.Dashboard">
+        <div class="o_hd_dashboard">
+            <h2 class="mb-4">Help Desk Dashboard</h2>
+
+            <!-- Four number boxes -->
+            <div class="o_hd_kpi_row">
+                <div class="o_hd_kpi_box" t-on-click="() => this.openList('All Tickets', [])">
+                    <div class="o_hd_kpi_number"><t t-esc="state.total"/></div>
+                    <div class="o_hd_kpi_label">Total Tickets</div>
+                </div>
+                <div class="o_hd_kpi_box o_hd_blue" t-on-click="() => this.openList('Open Tickets', [['stage', 'in', ['new', 'in_progress']]])">
+                    <div class="o_hd_kpi_number"><t t-esc="state.open"/></div>
+                    <div class="o_hd_kpi_label">Open</div>
+                </div>
+                <div class="o_hd_kpi_box o_hd_red" t-on-click="() => this.openList('Urgent Tickets', [['stage', 'in', ['new', 'in_progress']], ['priority', '=', '3']])">
+                    <div class="o_hd_kpi_number"><t t-esc="state.urgent"/></div>
+                    <div class="o_hd_kpi_label">Urgent (Open)</div>
+                </div>
+                <div class="o_hd_kpi_box o_hd_green" t-on-click="() => this.openList('Resolved Tickets', [['stage', 'in', ['resolved', 'closed']]])">
+                    <div class="o_hd_kpi_number"><t t-esc="state.done"/></div>
+                    <div class="o_hd_kpi_label">Resolved / Closed</div>
+                </div>
+            </div>
+
+            <!-- Two charts -->
+            <div class="o_hd_chart_row">
+                <div class="o_hd_chart_box">
+                    <h5>Tickets by Stage</h5>
+                    <canvas t-ref="stageCanvas"></canvas>
+                </div>
+                <div class="o_hd_chart_box">
+                    <h5>Tickets by Category</h5>
+                    <canvas t-ref="categoryCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

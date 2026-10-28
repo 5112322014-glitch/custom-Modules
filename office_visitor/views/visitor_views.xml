@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form view -->
+    <record id="view_office_visitor_form" model="ir.ui.view">
+        <field name="name">office.visitor.form</field>
+        <field name="model">office.visitor</field>
+        <field name="arch" type="xml">
+            <form string="Visitor">
+                <header>
+                    <button name="action_check_in" type="object" string="Check In"
+                            class="btn-primary" invisible="state != 'registered' or not id"/>
+                    <button name="action_check_out" type="object" string="Check Out"
+                            class="btn-primary" invisible="state != 'checked_in'"/>
+                    <button name="action_print_badge" type="object" string="Print Badge"
+                            invisible="not id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="registered,checked_in,checked_out"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Visitor name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="badge_number"/>
+                            <field name="place"/>
+                            <field name="host_employee_id"/>
+                        </group>
+                        <group>
+                            <field name="visit_date"/>
+                            <field name="check_in_time"/>
+                            <field name="check_out_time"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_office_visitor_list" model="ir.ui.view">
+        <field name="name">office.visitor.list</field>
+        <field name="model">office.visitor</field>
+        <field name="arch" type="xml">
+            <list string="Visitors"
+                  decoration-success="state == 'checked_in'"
+                  decoration-muted="state == 'checked_out'">
+                <field name="badge_number"/>
+                <field name="name"/>
+                <field name="place"/>
+                <field name="host_employee_id"/>
+                <field name="visit_date"/>
+                <field name="check_in_time"/>
+                <field name="check_out_time"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search view with the "Last 10 Days" filter -->
+    <record id="view_office_visitor_search" model="ir.ui.view">
+        <field name="name">office.visitor.search</field>
+        <field name="model">office.visitor</field>
+        <field name="arch" type="xml">
+            <search string="Search Visitors">
+                <field name="name"/>
+                <field name="place"/>
+                <field name="host_employee_id"/>
+                <field name="badge_number"/>
+                <filter string="Last 10 Days" name="last_10_days"
+                        domain="[('visit_date', '&gt;=', (context_today() - relativedelta(days=10)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Inside Now" name="inside_now"
+                        domain="[('state', '=', 'checked_in')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Visit Date" name="group_date"
+                            context="{'group_by': 'visit_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_office_visitor_last10" model="ir.actions.act_window">
+        <field name="name">Visitors - Last 10 Days</field>
+        <field name="res_model">office.visitor</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_last_10_days': 1}</field>
+    </record>
+
+    <record id="action_office_visitor_all" model="ir.actions.act_window">
+        <field name="name">All Visitors</field>
+        <field name="res_model">office.visitor</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_office_visitor_root" name="Visitors" sequence="50" groups="office_visitor.group_visitor_user"/>
+    <menuitem id="menu_office_visitor_last10" name="Last 10 Days"
+              parent="menu_office_visitor_root"
+              action="action_office_visitor_last10" sequence="10"/>
+    <menuitem id="menu_office_visitor_all" name="All Visitors"
+              parent="menu_office_visitor_root"
+              action="action_office_visitor_all" sequence="20" groups="office_visitor.group_visitor_manager"/>
+
+</odoo>

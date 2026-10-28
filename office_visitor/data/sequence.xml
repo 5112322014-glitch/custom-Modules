@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_office_visitor" model="ir.sequence">
+            <field name="name">Office Visitor Badge</field>
+            <field name="code">office.visitor</field>
+            <field name="prefix">VIS/</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

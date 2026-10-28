@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_visitor_arrival" model="mail.template">
+            <field name="name">Visitor Arrival Notification</field>
+            <field name="model_id" ref="model_office_visitor"/>
+            <field name="subject">Visitor arrived: {{ object.name }}</field>
+            <field name="email_to">{{ object.host_employee_id.work_email }}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Hello <t t-out="object.host_employee_id.name"/>,</p>
+                    <p>
+                        <b><t t-out="object.name"/></b> from
+                        <t t-out="object.place"/> has arrived to meet you.
+                    </p>
+                    <p>Reason for visit: <t t-out="object.reason"/></p>
+                    <p>Badge number: <t t-out="object.badge_number"/></p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_office_visitor_dashboard" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">office_visitor.dashboard</field>
+    </record>
+
+    <menuitem id="menu_office_visitor_dashboard" name="Dashboard"
+              parent="menu_office_visitor_root"
+              action="action_office_visitor_dashboard" sequence="1"
+              groups="office_visitor.group_visitor_user"/>
+
+</odoo>

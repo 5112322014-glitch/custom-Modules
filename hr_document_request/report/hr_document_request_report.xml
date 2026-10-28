@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="action_report_hr_document_request" model="ir.actions.report">
+            <field name="name">Documents Request</field>
+            <field name="model">hr.document.request</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hr_document_request.report_document_request_template</field>
+            <field name="report_file">hr_document_request.report_document_request_template</field>
+            <field name="print_report_name">(object.name or 'Document_Request').replace('/', '_')</field>
+            <field name="binding_model_id" ref="model_hr_document_request"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="report_document_request_template">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <main class="page" style="font-size: 14px; line-height: 1.8;">
+
+                        <!-- Date and reference -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Ref:</strong> <span t-field="doc.name"/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>Date:</strong>
+                                <span t-out="doc.approved_on or doc.requested_on" t-options="{'widget': 'date'}"/>
+                            </div>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="text-center mt-4 mb-4">
+                            <h3 style="text-decoration: underline; text-transform: uppercase;">
+                                <t t-if="doc.document_type == 'salary_certificate'">Salary Certificate</t>
+                                <t t-elif="doc.document_type == 'experience_letter'">Experience Letter</t>
+                                <t t-elif="doc.document_type == 'noc'">No Objection Certificate</t>
+                                <t t-else="">Employment Certificate</t>
+                            </h3>
+                        </div>
+
+                        <p><strong>To Whom It May Concern,</strong></p>
+
+                        <!-- Body -->
+                        <p style="text-align: justify;">
+                            This is to certify that
+                            <strong><span t-out="doc.employee_id.sudo().name"/></strong>
+                            is employed with
+                            <strong><span t-out="doc.company_id_name"/></strong>
+                            as
+                            <strong><span t-out="doc.designation or 'N/A'"/></strong>
+                            since
+                            <strong><span t-out="doc.joining_date" t-options="{'widget': 'date'}"/></strong>.
+                        </p>
+
+                        <t t-if="doc.document_type == 'salary_certificate'">
+                            <p style="text-align: justify;">
+                                This certificate is issued upon the request of the employee for the purpose of
+                                <span t-out="doc.reason"/>.
+                            </p>
+                        </t>
+                        <t t-elif="doc.document_type == 'experience_letter'">
+                            <p style="text-align: justify;">
+                                During the tenure, the employee has discharged assigned duties sincerely.
+                                This letter is issued on request for the purpose of
+                                <span t-out="doc.reason"/>.
+                            </p>
+                        </t>
+                        <t t-elif="doc.document_type == 'noc'">
+                            <p style="text-align: justify;">
+                                The company has no objection to the employee's request regarding
+                                <span t-out="doc.reason"/>.
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <p style="text-align: justify;">
+                                This letter is issued on request for the purpose of
+                                <span t-out="doc.reason"/>.
+                            </p>
+                        </t>
+
+                        <p>This letter is issued without any liability on the part of the company.</p>
+
+                        <!-- Signature -->
+                        <div class="mt-5 pt-5">
+                            <p>Sincerely,</p>
+                            <br/><br/>
+                            <p>----------------------------------------</p>
+                            <p><strong>Authorized Signatory</strong><br/>Human Resources Department<br/>
+                                <span t-out="doc.company_id_name"/></p>
+                        </div>
+                    </main>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

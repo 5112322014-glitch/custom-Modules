@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_office_visitor_receptionist,office.visitor.receptionist,model_office_visitor,office_visitor.group_visitor_user,1,1,1,0
+access_office_visitor_manager,office.visitor.manager,model_office_visitor,office_visitor.group_visitor_manager,1,1,1,1
+access_office_visitor_token_manager,office.visitor.token.manager,model_office_visitor_token,office_visitor.group_visitor_manager,1,0,0,1

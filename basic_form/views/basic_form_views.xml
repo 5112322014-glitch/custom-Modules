@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kanban view: one card per employee -->
+    <record id="view_basic_form_kanban" model="ir.ui.view">
+        <field name="name">basic.form.kanban</field>
+        <field name="model">basic.form</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="department">
+                <field name="id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex">
+                            <img t-att-src="'/web/image/basic.form/' + record.id.raw_value + '/image'"
+                                 class="o_image_64_cover me-3" alt="Photo"/>
+                            <div>
+                                <field name="name" class="fw-bold fs-5"/>
+                                <div><field name="job_title"/></div>
+                                <div><field name="employee_id"/></div>
+                                <div><field name="email"/></div>
+                                <div><field name="phone"/></div>
+                                <field name="status" widget="badge"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view: all employees in a table -->
+    <record id="view_basic_form_list" model="ir.ui.view">
+        <field name="name">basic.form.list</field>
+        <field name="model">basic.form</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="job_title"/>
+                <field name="department"/>
+                <field name="employment_type"/>
+                <field name="status"/>
+                <field name="work_location"/>
+                <field name="joining_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view: the detail page of one employee -->
+    <record id="view_basic_form_form" model="ir.ui.view">
+        <field name="name">basic.form.form</field>
+        <field name="model">basic.form</field>
+        <field name="arch" type="xml">
+            <form string="Employee">
+                <header>
+                    <field name="status" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <group>
+                        <group string="Work Details">
+                            <field name="name"/>
+                            <field name="employee_id"/>
+                            <field name="job_title"/>
+                            <field name="department"/>
+                            <field name="employment_type"/>
+                            <field name="manager_id"/>
+                            <field name="work_location"/>
+                            <field name="joining_date"/>
+                            <field name="salary"/>
+                        </group>
+                        <group string="Personal Details">
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="date_of_birth"/>
+                            <field name="gender"/>
+                            <field name="address"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                        <page string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Graph view: number of employees per department -->
+    <record id="view_basic_form_graph" model="ir.ui.view">
+        <field name="name">basic.form.graph</field>
+        <field name="model">basic.form</field>
+        <field name="arch" type="xml">
+            <graph string="Employees by Department" type="bar">
+                <field name="department"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search view: search box, filters and group by options -->
+    <record id="view_basic_form_search" model="ir.ui.view">
+        <field name="name">basic.form.search</field>
+        <field name="model">basic.form</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="job_title"/>
+                <field name="email"/>
+                <filter name="filter_active" string="Active" domain="[('status', '=', 'active')]"/>
+                <filter name="filter_on_leave" string="On Leave" domain="[('status', '=', 'on_leave')]"/>
+                <filter name="filter_resigned" string="Resigned" domain="[('status', '=', 'resigned')]"/>
+                <filter name="filter_interns" string="Interns" domain="[('employment_type', '=', 'intern')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_department" string="Department" context="{'group_by': 'department'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_type" string="Employment Type" context="{'group_by': 'employment_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action: which views to open for this model -->
+    <record id="action_basic_form" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">basic.form</field>
+        <field name="view_mode">kanban,list,form,graph</field>
+    </record>
+
+    <!-- Menu: the button in the top menu bar -->
+    <menuitem id="menu_basic_form_root" name="Basic Form" sequence="10"/>
+
+</odoo>

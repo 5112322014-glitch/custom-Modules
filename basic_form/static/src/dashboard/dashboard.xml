@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="basic_form.Dashboard">
+        <div class="o_basic_dashboard">
+            <h2 class="mb-4">Employee Dashboard</h2>
+
+            <!-- Four number boxes -->
+            <div class="o_kpi_row">
+                <div class="o_kpi_box" t-on-click="() => this.openList('All Employees', [])">
+                    <div class="o_kpi_number"><t t-esc="state.total"/></div>
+                    <div class="o_kpi_label">Total Employees</div>
+                </div>
+                <div class="o_kpi_box o_kpi_green" t-on-click="() => this.openList('Active Employees', [['status', '=', 'active']])">
+                    <div class="o_kpi_number"><t t-esc="state.active"/></div>
+                    <div class="o_kpi_label">Active</div>
+                </div>
+                <div class="o_kpi_box o_kpi_orange" t-on-click="() => this.openList('On Leave', [['status', '=', 'on_leave']])">
+                    <div class="o_kpi_number"><t t-esc="state.onLeave"/></div>
+                    <div class="o_kpi_label">On Leave</div>
+                </div>
+                <div class="o_kpi_box o_kpi_blue" t-on-click="() => this.openList('Interns', [['employment_type', '=', 'intern']])">
+                    <div class="o_kpi_number"><t t-esc="state.interns"/></div>
+                    <div class="o_kpi_label">Interns</div>
+                </div>
+            </div>
+
+            <!-- Two charts -->
+            <div class="o_chart_row">
+                <div class="o_chart_box">
+                    <h5>Employees by Department</h5>
+                    <canvas t-ref="deptCanvas"></canvas>
+                </div>
+                <div class="o_chart_box">
+                    <h5>Employees by Status</h5>
+                    <canvas t-ref="statusCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

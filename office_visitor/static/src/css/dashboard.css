@@ -1,0 +1,21 @@
+.o_visitor_dashboard { padding: 24px; overflow-y: auto; height: 100%; }
+.o_vd_header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.o_vd_cards { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+.o_vd_card { flex: 1 1 200px; padding: 22px; border-radius: 12px; color: #fff; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.15s; }
+.o_vd_card:hover { transform: translateY(-3px); }
+.o_vd_number { font-size: 40px; font-weight: 700; line-height: 1.1; }
+.o_vd_label { font-size: 15px; opacity: 0.9; margin-top: 4px; }
+.o_vd_blue { background: #3b82f6; }
+.o_vd_green { background: #10b981; }
+.o_vd_orange { background: #f59e0b; }
+.o_vd_purple { background: #8b5cf6; }
+.o_vd_panels { display: flex; flex-wrap: wrap; gap: 16px; }
+.o_vd_panel { flex: 1 1 380px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.o_vd_chart { display: flex; align-items: flex-end; gap: 12px; height: 200px; padding-top: 10px; }
+.o_vd_bar_wrap { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; cursor: pointer; }
+.o_vd_bar { width: 100%; max-width: 40px; background: #3b82f6; border-radius: 6px 6px 0 0; min-height: 3px; }
+.o_vd_bar_count { font-weight: 600; margin-bottom: 4px; }
+.o_vd_bar_label { font-size: 12px; margin-top: 6px; color: #6b7280; }
+.o_vd_row { cursor: pointer; }
+.o_vd_row:hover { background: #f3f4f6; }
+.o_vd_empty, .o_vd_loading { color: #6b7280; padding: 12px 0; }

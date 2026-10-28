@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Category: groups the three roles under one heading in the user settings -->
+    <record id="module_category_helpdesk_basic" model="ir.module.category">
+        <field name="name">Help Desk</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <!-- Group 1: normal employee, can create tickets and see only their own -->
+    <record id="group_helpdesk_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_category_helpdesk_basic"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Group 2: support team, can see and work on all tickets -->
+    <record id="group_helpdesk_agent" model="res.groups">
+        <field name="name">Agent</field>
+        <field name="category_id" ref="module_category_helpdesk_basic"/>
+        <field name="implied_ids" eval="[(4, ref('group_helpdesk_user'))]"/>
+    </record>
+
+    <!-- Group 3: help desk head, full access including delete and dashboard -->
+    <record id="group_helpdesk_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_helpdesk_basic"/>
+        <field name="implied_ids" eval="[(4, ref('group_helpdesk_agent'))]"/>
+        <!-- Admin users get this group automatically -->
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Rule 1: a normal user sees only the tickets he raised -->
+    <record id="rule_ticket_user_own" model="ir.rule">
+        <field name="name">Help Desk: users see their own tickets</field>
+        <field name="model_id" ref="model_helpdesk_basic_ticket"/>
+        <field name="domain_force">[('requester_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_helpdesk_user'))]"/>
+    </record>
+
+    <!-- Rule 2: agents (and managers) see all tickets -->
+    <record id="rule_ticket_agent_all" model="ir.rule">
+        <field name="name">Help Desk: agents see all tickets</field>
+        <field name="model_id" ref="model_helpdesk_basic_ticket"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_helpdesk_agent'))]"/>
+    </record>
+
+</odoo>

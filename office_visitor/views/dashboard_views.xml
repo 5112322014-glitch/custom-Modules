@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Graph view: visitors per day, split by status -->
+    <record id="view_office_visitor_graph" model="ir.ui.view">
+        <field name="name">office.visitor.graph</field>
+        <field name="model">office.visitor</field>
+        <field name="arch" type="xml">
+            <graph string="Visitors" type="bar">
+                <field name="visit_date" interval="day"/>
+                <field name="state" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot view: employee vs status -->
+    <record id="view_office_visitor_pivot" model="ir.ui.view">
+        <field name="name">office.visitor.pivot</field>
+        <field name="model">office.visitor</field>
+        <field name="arch" type="xml">
+            <pivot string="Visitors Analysis">
+                <field name="host_employee_id" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action opening graph and pivot, with the Last 10 Days filter on -->
+    <record id="action_office_visitor_analysis" model="ir.actions.act_window">
+        <field name="name">Visitors Analysis</field>
+        <field name="res_model">office.visitor</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="context">{'search_default_last_10_days': 1}</field>
+    </record>
+
+    <menuitem id="menu_office_visitor_analysis" name="Analysis"
+              parent="menu_office_visitor_root"
+              action="action_office_visitor_analysis" sequence="30"
+              groups="office_visitor.group_visitor_manager"/>
+
+</odoo>

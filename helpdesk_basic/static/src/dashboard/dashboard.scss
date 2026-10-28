@@ -1,0 +1,55 @@
+.o_hd_dashboard {
+    padding: 24px;
+    overflow: auto;
+    height: 100%;
+    background: #f5f6fa;
+
+    .o_hd_kpi_row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+
+    .o_hd_kpi_box {
+        flex: 1 1 200px;
+        background: #ffffff;
+        border-left: 6px solid #714B67;
+        border-radius: 8px;
+        padding: 20px;
+        cursor: pointer;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+
+        &:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .o_hd_blue { border-left-color: #017E84; }
+    .o_hd_red { border-left-color: #E76F51; }
+    .o_hd_green { border-left-color: #2A9D8F; }
+
+    .o_hd_kpi_number {
+        font-size: 36px;
+        font-weight: bold;
+    }
+
+    .o_hd_kpi_label {
+        color: #6c757d;
+    }
+
+    .o_hd_chart_row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .o_hd_chart_box {
+        flex: 1 1 400px;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+        max-height: 420px;
+    }
+}

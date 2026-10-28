@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kanban view: one card per ticket, one column per stage -->
+    <record id="view_helpdesk_ticket_kanban" model="ir.ui.view">
+        <field name="name">helpdesk.basic.ticket.kanban</field>
+        <field name="model">helpdesk.basic.ticket</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage">
+                <templates>
+                    <t t-name="card">
+                        <field name="subject" class="fw-bold fs-5"/>
+                        <div><field name="name"/></div>
+                        <div><field name="requester_id"/></div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <field name="priority" widget="priority"/>
+                            <field name="assigned_id" widget="many2one_avatar_user"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view: all tickets in a table -->
+    <record id="view_helpdesk_ticket_list" model="ir.ui.view">
+        <field name="name">helpdesk.basic.ticket.list</field>
+        <field name="model">helpdesk.basic.ticket</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="requester_id"/>
+                <field name="assigned_id"/>
+                <field name="priority" widget="priority"/>
+                <field name="category"/>
+                <field name="stage"/>
+                <field name="deadline"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view: the detail page of one ticket -->
+    <record id="view_helpdesk_ticket_form" model="ir.ui.view">
+        <field name="name">helpdesk.basic.ticket.form</field>
+        <field name="model">helpdesk.basic.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Ticket">
+                <header>
+                    <field name="stage" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="subject"/>
+                            <field name="requester_id"/>
+                            <field name="assigned_id"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="category"/>
+                            <field name="deadline"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view: search box and filters -->
+    <record id="view_helpdesk_ticket_search" model="ir.ui.view">
+        <field name="name">helpdesk.basic.ticket.search</field>
+        <field name="model">helpdesk.basic.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="requester_id"/>
+                <filter name="filter_mine" string="Raised By Me" domain="[('requester_id', '=', uid)]"/>
+                <filter name="filter_assigned_me" string="Assigned To Me" domain="[('assigned_id', '=', uid)]"/>
+                <filter name="filter_unassigned" string="Unassigned" domain="[('assigned_id', '=', False)]"/>
+                <filter name="filter_open" string="Open" domain="[('stage', 'in', ['new', 'in_progress'])]"/>
+                <filter name="filter_high" string="High Priority" domain="[('priority', 'in', ['2', '3'])]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_stage" string="Stage" context="{'group_by': 'stage'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by': 'category'}"/>
+                    <filter name="group_assigned" string="Assigned To" context="{'group_by': 'assigned_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action 1: My Tickets (for every employee) -->
+    <record id="action_helpdesk_my_tickets" model="ir.actions.act_window">
+        <field name="name">My Tickets</field>
+        <field name="res_model">helpdesk.basic.ticket</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_filter_mine': 1}</field>
+    </record>
+
+    <!-- Action 2: All Tickets (for support team and managers) -->
+    <record id="action_helpdesk_all_tickets" model="ir.actions.act_window">
+        <field name="name">All Tickets</field>
+        <field name="res_model">helpdesk.basic.ticket</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_helpdesk_root" name="Help Desk" sequence="20"
+              groups="helpdesk_basic.group_helpdesk_user"/>
+    <menuitem id="menu_helpdesk_my_tickets" name="My Tickets"
+              parent="menu_helpdesk_root" action="action_helpdesk_my_tickets" sequence="1"/>
+    <menuitem id="menu_helpdesk_all_tickets" name="All Tickets"
+              parent="menu_helpdesk_root" action="action_helpdesk_all_tickets" sequence="2"
+              groups="helpdesk_basic.group_helpdesk_agent"/>
+
+</odoo>

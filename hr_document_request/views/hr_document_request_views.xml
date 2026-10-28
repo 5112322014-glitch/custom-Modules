@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree View -->
+        <record id="view_hr_document_request_tree" model="ir.ui.view">
+            <field name="name">hr.document.request.tree</field>
+            <field name="model">hr.document.request</field>
+            <field name="arch" type="xml">
+                <list string="Document Requests">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="document_type"/>
+                    <field name="required_by_date"/>
+                    <field name="requested_on"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'approved' or state == 'issued'" decoration-danger="state == 'rejected'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_hr_document_request_form" model="ir.ui.view">
+            <field name="name">hr.document.request.form</field>
+            <field name="model">hr.document.request</field>
+            <field name="arch" type="xml">
+                <form string="Document Request">
+                    <header>
+                        <button name="action_submit" string="Submit" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_approve" string="Approve" type="object" class="btn-success" invisible="state != 'submitted'" groups="hr.group_hr_manager"/>
+
+                        <!-- Reject Button Linked to Wizard (Only for Manager & only when Submitted) -->
+                        <button name="%(hr_document_request.action_hr_document_request_reject_wizard)d"
+                                string="Reject"
+                                type="action"
+                                class="btn-danger"
+                                invisible="state != 'submitted'"
+                                groups="hr.group_hr_manager"/>
+
+                        <button name="action_issue" string="Issue Document" type="object" class="btn-primary" invisible="state != 'approved'" groups="hr.group_hr_manager"/>
+                        <button name="action_reopen" string="Reopen" type="object" invisible="state != 'issued'" groups="hr.group_hr_manager"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'rejected'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,issued,rejected"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id" readonly="state != 'draft'"/>
+                                <field name="document_type" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <field name="required_by_date" readonly="state != 'draft'"/>
+                                <field name="requested_on" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <group string="Purpose &amp; Details">
+                            <field name="reason" readonly="state != 'draft'" placeholder="Write purpose here..." nolabel="1"/>
+                        </group>
+
+                        <group string="Official Attachments" groups="hr.group_hr_manager">
+                            <field name="document_attachment" filename="attachment_filename"/>
+                            <field name="attachment_filename" invisible="1"/>
+                        </group>
+
+                        <group string="Approval Status">
+                            <group>
+                                <field name="approved_by_id" readonly="1"/>
+                                <field name="approved_on" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="rejection_reason" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <!-- Standard Odoo 18 Chatter -->
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_hr_document_request_search" model="ir.ui.view">
+            <field name="name">hr.document.request.search</field>
+            <field name="model">hr.document.request</field>
+            <field name="arch" type="xml">
+                <search string="Document Requests">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="document_type"/>
+                    <filter name="my_requests" string="My Requests"
+                            domain="[('employee_id.user_id', '=', uid)]"/>
+                    <filter name="pending_approval" string="Pending Approval"
+                            domain="[('state', '=', 'submitted')]"/>
+                    <filter name="this_month" string="This Month"
+                            domain="[('requested_on', '&gt;=', context_today().strftime('%Y-%m-01')),
+                                     ('requested_on', '&lt;', (context_today() + relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_employee" string="Employee"
+                                context="{'group_by': 'employee_id'}"/>
+                        <filter name="group_document_type" string="Document Type"
+                                context="{'group_by': 'document_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Kanban View -->
+        <record id="view_hr_document_request_kanban" model="ir.ui.view">
+            <field name="name">hr.document.request.kanban</field>
+            <field name="model">hr.document.request</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state">
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="card">
+                            <field name="name" class="fw-bold fs-5"/>
+                            <div><field name="employee_id"/></div>
+                            <div><field name="document_type"/></div>
+                            <div>Required by: <field name="required_by_date"/></div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Window Action -->
+        <record id="action_hr_document_request" model="ir.actions.act_window">
+            <field name="name">Document Requests</field>
+            <field name="res_model">hr.document.request</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="view_hr_document_request_search"/>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_document_request_root"
+                  name="HR Document Request"
+                  sequence="10"/>
+
+        <menuitem id="menu_document_request_action"
+                  name="Requests"
+                  parent="menu_document_request_root"
+                  action="action_hr_document_request"
+                  sequence="10"/>
+
+    </data>
+</odoo>
